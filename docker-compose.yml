@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  backend:
+    # Build the backend docker file (development version). 
+    build: ./backend
+    # Run the uvicorn command.
+    command: uvicorn app.main:app --proxy-headers --host 0.0.0.0 --port 80
+    # Expose the default port. This is only accessed by Traefik.
+    expose:
+      - 80
+    volumes:
+      - ./volume:/usr/src/app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    networks:
+      - traefik-public
+
+  worker:
+    build: ./backend
+    command: celery -A app.worker worker --loglevel=info
+    volumes:
+      - ./volume:/usr/src/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - backend
+      - redis
+    networks:
+      - traefik-public
+
+  redis:
+    image: redis:6-alpine
+    networks:
+      - traefik-public
+
+  frontend:
+    # Build the vue frontend docker file.
+    build: ./frontend
+    depends_on:
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`frontend.localhost`)"
+    networks:
+      - traefik-public
+
+  traefik:
+    image: traefik:v2.7
+    # !!! These have to be executed here. traefik.toml file was not working.
+    command:
+      - "--log.level=DEBUG"            # Enable development logging.
+      - "--api.insecure=true"          # Enable development level access to backend.
+      - "--providers.docker=true"      # Enable docker as provider so that traefik can access containers.
+      - "--providers.docker.exposedbydefault=false" # Containers are exposed only when chosen.
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      # !!! This didn't work
+      #- "./traefik.dev.toml:/etc/traefik/traefik.toml"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+
+volumes:
+  backend-volume:
