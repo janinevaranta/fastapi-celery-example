@@ -13,17 +13,6 @@ const endpoints = {
 </script>
 
 <template>
-  <div class="container">
-    <Clicker></Clicker>
-    <UploadExcel :url="base_url + endpoints.excel" :polling-url="base_url + endpoints.pollingExcel" />
-  </div>
+  <Clicker></Clicker>
+  <UploadExcel :url="base_url + endpoints.excel" :polling-url="base_url + endpoints.pollingExcel" />
 </template>
-
-<style>
-.container {
-  display: flex;
-  flex-direction: row;
-  gap: 5em;
-  width: 80vw;
-}
-</style>

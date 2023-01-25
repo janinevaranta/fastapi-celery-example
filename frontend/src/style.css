@@ -28,8 +28,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-height: 830px;
 }
 
 h1 {
@@ -61,10 +60,20 @@ button:focus-visible {
 }
 
 #app {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+  max-width: 1280px;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 5em;
+}
+
+@media only screen and (max-width: 768px) {
+  #app {
+    flex-direction: column;
+  }
 }
 
 @media (prefers-color-scheme: light) {

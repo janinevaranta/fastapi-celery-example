@@ -2,7 +2,7 @@
 import axios, { RawAxiosRequestConfig } from "axios";
 import type { AxiosResponse } from "axios"
 import FileDownload from "js-file-download";
-import { ref, defineProps, onMounted } from "vue";
+import { ref, defineProps } from "vue";
 import { useFileDialog } from "@vueuse/core";
 
 // PROPS AND STATES
@@ -162,7 +162,7 @@ const uploadFile = async (url: string, worker=false) => {
         </button>
       </div>
     </div>
-    <div>
+    <div class="file-info">
       <p v-show="displayTimeElapsed">Last upload duration: {{ timeElapsed / 1000 }} seconds</p>
       <p v-for="file in files" :key="(file as File).name" class="file-info">
           Name: {{ (file as File).name }} <br>
@@ -174,12 +174,20 @@ const uploadFile = async (url: string, worker=false) => {
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 5em;
+}
+.file-info {
+  width: 14em;
+}
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
+  width: 60px;
+  height: 60px;
   animation: spin 2s linear infinite;
 }
 
@@ -191,6 +199,12 @@ const uploadFile = async (url: string, worker=false) => {
 
 .file-info {
   text-align: start;
+}
+
+@media only screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
 }
 
 @keyframes spin {
