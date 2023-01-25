@@ -106,17 +106,16 @@ const uploadFile = async (url: string, worker=false) => {
   }
   try {
     // Make a request and download the response.
-    loading.value = true;
+    loading.value = true; // Start the load spinner.
     const response = await axiosInstance.post(url, formData, axiosConfig);
     console.log("Starting the download...")
     // Axios response doesn't initiate download on its own.
     // We can use a library to do it automatically for us.
-    // We could also save the response to a value that could
-    // be downloaded from a link click.
+    // Alternatively we could provide a download prompt for the user.
     FileDownload(response.data, "new_file.xlsx");
     console.log("Download ready!")
-    loading.value = false;
-    reset();
+    loading.value = false; // Stop the load spinner.
+    reset(); // Reset the selected file.
 
     // Calculate the elapsed time since the file upload and
     // make the elapsed time value visible.
