@@ -19,7 +19,7 @@ This example is made to work with Excel files (.xlsx). Using other file formats 
 
 7. The idea is to tinker around to see how the workers work and what's the difference between the two options. You can try uploading larger files and in separate frontend instance to see how each changing variable affects the processing time.
 
-## How is it build?
+## How is it built?
 
 The structure of the example is as follows:
 
